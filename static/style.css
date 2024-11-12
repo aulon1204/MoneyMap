@@ -64,3 +64,18 @@ form button {
 form button:hover {
     background-color: #4cae4c;
 }
+
+/* Flash-Nachrichten */
+.flash-messages {
+    width: 80%;
+    margin: 20px auto;
+}
+
+.flash-message {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #d4edda; /* Heller Grünton für positive Nachrichten */
+    color: #155724; /* Dunkelgrüne Schrift */
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+}

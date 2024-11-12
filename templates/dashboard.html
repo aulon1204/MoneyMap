@@ -1,55 +1,77 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard - MoneyMap{% endblock %}
 
 {% block content %}
-<h2>Willkommen im Dashboard!</h2>
-<p>Hier kannst du deine Finanzen verwalten und neue Einträge hinzufügen.</p>
+<h2>Dein Dashboard</h2>
 
 <h3>Deine Transaktionen</h3>
-{% if transactions %}
-    <ul>
+<table>
+    <tr>
+        <th>Betrag</th>
+        <th>Kategorie</th>
+        <th>Typ</th>
+        <th>Datum</th>
+        <th>Aktionen</th>
+    </tr>
     {% for transaction in transactions %}
-        <li>{{ transaction.date.strftime('%Y-%m-%d') }} - 
-            {{ transaction.category }}: {{ transaction.amount }} € 
-            ({{ "Einnahme" if transaction.transaction_type == "income" else "Ausgabe" }})
-            <form action="{{ url_for('delete_transaction', id=transaction.id) }}" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('Möchtest du diese Transaktion wirklich löschen?');">Löschen</button>
+    <tr>
+        <td>{{ transaction.amount }}</td>
+        <td>{{ transaction.category }}</td>
+        <td>{{ transaction.transaction_type }}</td>
+        <td>{{ transaction.date.strftime('%Y-%m-%d') }}</td>
+        <td>
+            <form action="{{ url_for('delete_transaction', id=transaction.id) }}" method="POST">
+                <button type="submit">Löschen</button>
             </form>
-        </li>
+        </td>
+    </tr>
     {% endfor %}
-    </ul>
-{% else %}
-    <p>Keine Transaktionen vorhanden.</p>
-{% endif %}
+</table>
 
 <h3>Deine Budgets</h3>
-{% if budgets %}
-    <ul>
+<table>
+    <tr>
+        <th>Kategorie</th>
+        <th>Betrag</th>
+        <th>Zeitraum</th>
+        <th>Aktionen</th>
+    </tr>
     {% for budget in budgets %}
-        <li>{{ budget.category }} - {{ budget.amount }} € ({{ budget.period | title }})
-            <form action="{{ url_for('delete_budget', id=budget.id) }}" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('Möchtest du dieses Budget wirklich löschen?');">Löschen</button>
+    <tr>
+        <td>{{ budget.category }}</td>
+        <td>{{ budget.amount }}</td>
+        <td>{{ budget.period }}</td>
+        <td>
+            <form action="{{ url_for('delete_budget', id=budget.id) }}" method="POST">
+                <button type="submit">Löschen</button>
             </form>
-        </li>
+        </td>
+    </tr>
     {% endfor %}
-    </ul>
-{% else %}
-    <p>Keine Budgets vorhanden.</p>
-{% endif %}
+</table>
 
 <h3>Deine Sparziele</h3>
-{% if savings_goals %}
-    <ul>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Zielbetrag</th>
+        <th>Aktueller Betrag</th>
+        <th>Datum erstellt</th>
+        <th>Aktionen</th>
+    </tr>
     {% for goal in savings_goals %}
-        <li>{{ goal.name }} - Ziel: {{ goal.target_amount }} €, Aktuell: {{ goal.current_amount }} €
-            <form action="{{ url_for('delete_savings_goal', id=goal.id) }}" method="POST" style="display:inline;">
-                <button type="submit" onclick="return confirm('Möchtest du dieses Sparziel wirklich löschen?');">Löschen</button>
+    <tr>
+        <td>{{ goal.name }}</td>
+        <td>{{ goal.target_amount }}</td>
+        <td>{{ goal.current_amount }}</td>
+        <td>{{ goal.date_created.strftime('%Y-%m-%d') }}</td>
+        <td>
+            <form action="{{ url_for('delete_savings_goal', id=goal.id) }}" method="POST">
+                <button type="submit">Löschen</button>
             </form>
-        </li>
+        </td>
+    </tr>
     {% endfor %}
-    </ul>
-{% else %}
-    <p>Keine Sparziele vorhanden.</p>
-{% endif %}
+</table>
 {% endblock %}
