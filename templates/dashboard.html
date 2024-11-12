@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Willkommen im Dashboard!</h2>
+<p>Hier kannst du deine Finanzen verwalten und neue Einträge hinzufügen.</p>
+
+<div>
+    <h3>Funktionen:</h3>
+    <ul>
+        <li><a href="{{ url_for('add_transaction') }}">Transaktion hinzufügen</a> – Füge neue Einnahmen oder Ausgaben hinzu.</li>
+        <li><a href="{{ url_for('add_budget') }}">Budget hinzufügen</a> – Lege ein monatliches, jährliches oder benutzerdefiniertes Budget fest.</li>
+        <li><a href="{{ url_for('add_savings_goal') }}">Sparziel hinzufügen</a> – Setze ein neues Sparziel und verfolge deinen Fortschritt.</li>
+    </ul>
+</div>
+{% endblock %}

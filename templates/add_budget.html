@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Budget hinzufügen</title>
-</head>
-<body>
-    <h2>Budget hinzufügen</h2>
-    <form action="/add_budget" method="POST">
-        <input type="text" name="category" placeholder="Kategorie" required>
-        <input type="number" name="amount" placeholder="Betrag" required>
-        <select name="period">
-            <option value="monthly">Monatlich</option>
-            <option value="yearly">Jährlich</option>
-            <option value="custom">Benutzerdefiniert</option>
-        </select>
-        <button type="submit">Hinzufügen</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Budget hinzufügen{% endblock %}
+
+{% block content %}
+<h2>Budget hinzufügen</h2>
+<form action="{{ url_for('add_budget') }}" method="POST">
+    <input type="text" name="category" placeholder="Kategorie" required>
+    <input type="number" name="amount" placeholder="Betrag" required>
+    <select name="period">
+        <option value="monthly">Monatlich</option>
+        <option value="yearly">Jährlich</option>
+        <option value="custom">Benutzerdefiniert</option>
+    </select>
+    <button type="submit">Hinzufügen</button>
+</form>
+{% endblock %}

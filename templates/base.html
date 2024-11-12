@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}MoneyMap{% endblock %}</title>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a> |
+        <a href="{{ url_for('add_transaction') }}">Transaktion hinzufügen</a> |
+        <a href="{{ url_for('add_budget') }}">Budget hinzufügen</a> |
+        <a href="{{ url_for('add_savings_goal') }}">Sparziel hinzufügen</a> |
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+    <hr>
+
+    <!-- Seiteninhalt -->
+    {% block content %}{% endblock %}
+</body>
+</html>
