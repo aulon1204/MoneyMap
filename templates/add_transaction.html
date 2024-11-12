@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaktion hinzufügen</title>
+</head>
+<body>
+    <h2>Transaktion hinzufügen</h2>
+    <form action="/add_transaction" method="POST">
+        <input type="number" name="amount" placeholder="Betrag" required>
+        <input type="text" name="category" placeholder="Kategorie" required>
+        <select name="transaction_type">
+            <option value="income">Einnahme</option>
+            <option value="expense">Ausgabe</option>
+        </select>
+        <button type="submit">Hinzufügen</button>
+    </form>
+</body>
+</html>
