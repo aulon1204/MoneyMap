@@ -6,12 +6,50 @@
 <h2>Willkommen im Dashboard!</h2>
 <p>Hier kannst du deine Finanzen verwalten und neue Einträge hinzufügen.</p>
 
-<div>
-    <h3>Funktionen:</h3>
+<h3>Deine Transaktionen</h3>
+{% if transactions %}
     <ul>
-        <li><a href="{{ url_for('add_transaction') }}">Transaktion hinzufügen</a> – Füge neue Einnahmen oder Ausgaben hinzu.</li>
-        <li><a href="{{ url_for('add_budget') }}">Budget hinzufügen</a> – Lege ein monatliches, jährliches oder benutzerdefiniertes Budget fest.</li>
-        <li><a href="{{ url_for('add_savings_goal') }}">Sparziel hinzufügen</a> – Setze ein neues Sparziel und verfolge deinen Fortschritt.</li>
+    {% for transaction in transactions %}
+        <li>{{ transaction.date.strftime('%Y-%m-%d') }} - 
+            {{ transaction.category }}: {{ transaction.amount }} € 
+            ({{ "Einnahme" if transaction.transaction_type == "income" else "Ausgabe" }})
+            <form action="{{ url_for('delete_transaction', id=transaction.id) }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Möchtest du diese Transaktion wirklich löschen?');">Löschen</button>
+            </form>
+        </li>
+    {% endfor %}
     </ul>
-</div>
+{% else %}
+    <p>Keine Transaktionen vorhanden.</p>
+{% endif %}
+
+<h3>Deine Budgets</h3>
+{% if budgets %}
+    <ul>
+    {% for budget in budgets %}
+        <li>{{ budget.category }} - {{ budget.amount }} € ({{ budget.period | title }})
+            <form action="{{ url_for('delete_budget', id=budget.id) }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Möchtest du dieses Budget wirklich löschen?');">Löschen</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Keine Budgets vorhanden.</p>
+{% endif %}
+
+<h3>Deine Sparziele</h3>
+{% if savings_goals %}
+    <ul>
+    {% for goal in savings_goals %}
+        <li>{{ goal.name }} - Ziel: {{ goal.target_amount }} €, Aktuell: {{ goal.current_amount }} €
+            <form action="{{ url_for('delete_savings_goal', id=goal.id) }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Möchtest du dieses Sparziel wirklich löschen?');">Löschen</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Keine Sparziele vorhanden.</p>
+{% endif %}
 {% endblock %}

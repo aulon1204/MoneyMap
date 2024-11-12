@@ -5,12 +5,23 @@
 {% block content %}
 <h2>Transaktion hinzufügen</h2>
 <form action="{{ url_for('add_transaction') }}" method="POST">
-    <input type="number" name="amount" placeholder="Betrag" required>
-    <input type="text" name="category" placeholder="Kategorie" required>
-    <select name="transaction_type">
-        <option value="income">Einnahme</option>
-        <option value="expense">Ausgabe</option>
-    </select>
-    <button type="submit">Hinzufügen</button>
+    <div>
+        <label for="amount">Betrag (€):</label><br>
+        <input type="number" id="amount" name="amount" placeholder="Betrag" step="0.01" required>
+    </div>
+    <div>
+        <label for="category">Kategorie:</label><br>
+        <input type="text" id="category" name="category" placeholder="Kategorie" required>
+    </div>
+    <div>
+        <label for="transaction_type">Art der Transaktion:</label><br>
+        <select id="transaction_type" name="transaction_type" required>
+            <option value="income">Einnahme</option>
+            <option value="expense">Ausgabe</option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Hinzufügen</button>
+    </div>
 </form>
 {% endblock %}

@@ -5,9 +5,21 @@
 {% block content %}
 <h2>Registrieren</h2>
 <form action="{{ url_for('register') }}" method="POST">
-    <input type="text" name="username" placeholder="Benutzername" required>
-    <input type="email" name="email" placeholder="E-Mail" required>
-    <input type="password" name="password" placeholder="Passwort" required>
-    <button type="submit">Registrieren</button>
+    <div>
+        <label for="username">Benutzername:</label><br>
+        <input type="text" id="username" name="username" placeholder="Benutzername" required>
+    </div>
+    <div>
+        <label for="email">E-Mail:</label><br>
+        <input type="email" id="email" name="email" placeholder="E-Mail" required>
+    </div>
+    <div>
+        <label for="password">Passwort:</label><br>
+        <input type="password" id="password" name="password" placeholder="Passwort" required>
+    </div>
+    <div>
+        <button type="submit">Registrieren</button>
+    </div>
 </form>
+<p>Schon registriert? <a href="{{ url_for('login') }}">Hier anmelden</a>.</p>
 {% endblock %}
