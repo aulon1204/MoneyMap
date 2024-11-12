@@ -1,0 +1,93 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+ENV/
+env/
+venv.bak/
+.venv/
+
+# SQLite Datenbank
+finance.db
+
+# Flask instance folder
+instance/
+
+# Env-Dateien (für Umgebungsvariablen)
+.env
+.flaskenv
+
+# IDE- und Editor-spezifische Dateien
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-spezifische Dateien
+.DS_Store
+Thumbs.db
+
+# Log-Dateien
+*.log
+
+# Coverage Reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Flask-WTF CSRF token
+.flaskenv
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Coverage reports
+coverage/
+*.cover
+
+# Other
+*.sqlite3
