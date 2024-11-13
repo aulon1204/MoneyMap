@@ -1,0 +1,14 @@
+<!-- app/templates/500.html -->
+{% extends "base.html" %}
+
+{% block title %}Interner Serverfehler - MoneyMap{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-danger">500 - Interner Serverfehler</h2>
+    <p class="text-center">Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.</p>
+    <div class="text-center">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Zurück zum Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+<!-- app/templates/404.html -->
+{% extends "base.html" %}
+
+{% block title %}Seite nicht gefunden - MoneyMap{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-danger">404 - Seite nicht gefunden</h2>
+    <p class="text-center">Die angeforderte Seite existiert nicht.</p>
+    <div class="text-center">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Zurück zum Dashboard</a>
+    </div>
+</div>
+{% endblock %}

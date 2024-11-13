@@ -1,0 +1,28 @@
+<!-- app/templates/add_budget.html -->
+{% extends "base.html" %}
+
+{% block title %}Budget hinzufügen - MoneyMap{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Budget hinzufügen</h2>
+    <form action="{{ url_for('main.add_budget') }}" method="POST" class="mt-3">
+        <div class="form-group">
+            <label for="category">Kategorie:</label>
+            <input type="text" class="form-control" id="category" name="category" placeholder="Kategorie" required>
+        </div>
+        <div class="form-group">
+            <label for="amount">Betrag (€):</label>
+            <input type="number" class="form-control" id="amount" name="amount" placeholder="Betrag" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="period">Zeitraum:</label>
+            <select id="period" name="period" class="form-control" required>
+                <option value="monatlich">Monatlich</option>
+                <option value="jährlich">Jährlich</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Hinzufügen</button>
+    </form>
+</div>
+{% endblock %}

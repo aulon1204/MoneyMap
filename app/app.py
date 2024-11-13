@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import logging
 import os
+from app.models import User, Transaction, Budget, SavingsGoal
 
 # Logging konfigurieren
 logging.basicConfig(level=logging.DEBUG)
@@ -24,19 +25,6 @@ db = SQLAlchemy(app)
 
 # Flask-Migrate initialisieren
 migrate = Migrate(app, db)
-
-
-# Modell für Benutzer
-class User(db.Model):
-    __tablename__ = "user"  # Sicherstellen, dass der Tabellenname 'user' ist
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    transactions = db.relationship("Transaction", backref="user", lazy=True)
-    budgets = db.relationship("Budget", backref="user", lazy=True)
-    savings_goals = db.relationship("SavingsGoal", backref="user", lazy=True)
-
 
 # Login
 @app.route("/login", methods=["GET", "POST"])
@@ -69,44 +57,6 @@ def user_login():
 
     logging.debug("GET-Anfrage an /login")
     return render_template("login.html")
-
-
-# Modell für Einnahmen und Ausgaben
-class Transaction(db.Model):
-    __tablename__ = "transaction"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
-    category = db.Column(db.String(100), nullable=False)
-    transaction_type = db.Column(
-        db.String(10), nullable=False
-    )  # 'income' oder 'expense'
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-    frequency = db.Column(
-        db.String(20), nullable=False, default="einmalig"
-    )  # 'einmalig', 'wöchentlich', 'monatlich', 'jährlich'
-
-
-# Modell für Budgets
-class Budget(db.Model):
-    __tablename__ = "budget"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    category = db.Column(db.String(100), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
-    period = db.Column(db.String(20), nullable=False)  # z.B. 'monatlich', 'jährlich'
-
-
-# Modell für Sparziele
-class SavingsGoal(db.Model):
-    __tablename__ = "savings_goal"
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    target_amount = db.Column(db.Float, nullable=False)
-    current_amount = db.Column(db.Float, default=0.0)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 # Startseite
 @app.route("/")
