@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import logging
@@ -19,7 +20,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Deaktiviert Warnungen
 
 db = SQLAlchemy(app)
 
-# Datenbankmodelle
+# Flask-Migrate initialisieren
+migrate = Migrate(app, db)
 
 # Modell für Benutzer
 class User(db.Model):
@@ -32,6 +34,35 @@ class User(db.Model):
     budgets = db.relationship('Budget', backref='user', lazy=True)
     savings_goals = db.relationship('SavingsGoal', backref='user', lazy=True)
 
+# Login
+@app.route('/login', methods=['GET', 'POST'])
+def user_login():
+    if request.method == 'POST':
+        logging.debug("POST-Anfrage an /login")
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+        
+        if not user:
+            flash('Benutzer existiert nicht.')
+            logging.debug(f"Login fehlgeschlagen: Benutzer existiert nicht für Email: {email}")
+            return redirect(url_for('user_login'))
+        
+        if not check_password_hash(user.password, password):
+            flash('Falsches Passwort.')
+            logging.debug(f"Login fehlgeschlagen: Falsches Passwort für Email: {email}")
+            return redirect(url_for('user_login'))
+
+        # Login erfolgreich
+        session['user_id'] = user.id
+        flash('Erfolgreich eingeloggt!')
+        logging.debug(f"Benutzer eingeloggt: {email}, session user_id: {session.get('user_id')}")
+        return redirect(url_for('dashboard'))
+
+    logging.debug("GET-Anfrage an /login")
+    return render_template('login.html')
+
+
 # Modell für Einnahmen und Ausgaben
 class Transaction(db.Model):
     __tablename__ = 'transaction'
@@ -41,6 +72,9 @@ class Transaction(db.Model):
     category = db.Column(db.String(100), nullable=False)
     transaction_type = db.Column(db.String(10), nullable=False)  # 'income' oder 'expense'
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    frequency = db.Column(db.String(20), nullable=False, default='einmalig')  # 'einmalig', 'wöchentlich', 'monatlich', 'jährlich'
+
+
 
 # Modell für Budgets
 class Budget(db.Model):
@@ -66,7 +100,7 @@ class SavingsGoal(db.Model):
 def home():
     if 'user_id' in session:
         return redirect(url_for('dashboard'))
-    return redirect(url_for('login'))
+    return redirect(url_for('user_login'))
 
 # Registrierung
 @app.route('/register', methods=['GET', 'POST'])
@@ -92,7 +126,7 @@ def register():
         logging.debug(f"Benutzer registriert: {username}, {email}")
 
         flash('Registrierung erfolgreich!')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
     logging.debug("GET-Anfrage an /register")
     return render_template('register.html')
 
@@ -112,7 +146,7 @@ def login():
         else:
             flash('Login fehlgeschlagen')
             logging.debug(f"Login fehlgeschlagen für Email: {email}")
-            return redirect(url_for('login'))
+            return redirect(url_for('user_login'))
     logging.debug("GET-Anfrage an /login")
     return render_template('login.html')
 
@@ -122,7 +156,7 @@ def logout():
     session.pop('user_id', None)
     flash('Erfolgreich abgemeldet')
     logging.debug("Benutzer abgemeldet")
-    return redirect(url_for('login'))
+    return redirect(url_for('user_login'))
 
 # Dashboard
 @app.route('/dashboard')
@@ -130,14 +164,14 @@ def dashboard():
     if 'user_id' not in session:
         flash('Bitte melde dich an')
         logging.debug("Zugriff auf /dashboard ohne Anmeldung")
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
     
     user = db.session.get(User, session['user_id'])
     if user is None:
         flash('Benutzer nicht gefunden. Bitte melde dich erneut an.')
         logging.debug(f"Benutzer mit ID {session['user_id']} nicht gefunden.")
         session.pop('user_id', None)
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
     
     transactions = Transaction.query.filter_by(user_id=user.id).all()
     budgets = Budget.query.filter_by(user_id=user.id).all()
@@ -150,15 +184,16 @@ def dashboard():
 def add_transaction():
     if 'user_id' not in session:
         flash('Bitte melde dich an, um eine Transaktion hinzuzufügen.')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
 
     if request.method == 'POST':
         try:
             amount = float(request.form['amount'])
             category = request.form['category']
             transaction_type = request.form['transaction_type']
+            frequency = request.form['frequency']  # Das neue Feld
             user_id = session['user_id']
-            transaction = Transaction(user_id=user_id, amount=amount, category=category, transaction_type=transaction_type)
+            transaction = Transaction(user_id=user_id, amount=amount, category=category, transaction_type=transaction_type, frequency=frequency)
             db.session.add(transaction)
             db.session.commit()
             flash('Transaktion hinzugefügt!')
@@ -174,7 +209,7 @@ def add_transaction():
 def delete_transaction(id):
     if 'user_id' not in session:
         flash('Bitte melde dich an.')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
 
     transaction = Transaction.query.get_or_404(id)
     if transaction.user_id != session['user_id']:
@@ -195,7 +230,7 @@ def delete_transaction(id):
 def add_budget():
     if 'user_id' not in session:
         flash('Bitte melde dich an, um ein Budget hinzuzufügen.')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
 
     if request.method == 'POST':
         try:
@@ -219,7 +254,7 @@ def add_budget():
 def delete_budget(id):
     if 'user_id' not in session:
         flash('Bitte melde dich an.')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
 
     budget = Budget.query.get_or_404(id)
     if budget.user_id != session['user_id']:
@@ -240,7 +275,7 @@ def delete_budget(id):
 def add_savings_goal():
     if 'user_id' not in session:
         flash('Bitte melde dich an, um ein Sparziel hinzuzufügen.')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
 
     if request.method == 'POST':
         try:
@@ -269,7 +304,7 @@ def add_savings_goal():
 def delete_savings_goal(id):
     if 'user_id' not in session:
         flash('Bitte melde dich an.')
-        return redirect(url_for('login'))
+        return redirect(url_for('user_login'))
 
     savings_goal = SavingsGoal.query.get_or_404(id)
     if savings_goal.user_id != session['user_id']:
@@ -293,6 +328,30 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
+    
+def process_recurring_transactions():
+    today = datetime.utcnow().date()
+    recurring_transactions = Transaction.query.filter(Transaction.frequency != None).all()
+    
+    for transaction in recurring_transactions:
+        if transaction.frequency == 'monatlich':
+            next_due_date = transaction.date + relativedelta(months=1)
+        elif transaction.frequency == 'jährlich':
+            next_due_date = transaction.date + relativedelta(years=1)
+        elif transaction.frequency == 'wöchentlich':
+            next_due_date = transaction.date + timedelta(weeks=1)
+        
+        if next_due_date.date() <= today:
+            new_transaction = Transaction(
+                user_id=transaction.user_id,
+                amount=transaction.amount,
+                category=transaction.category,
+                transaction_type=transaction.transaction_type,
+                date=datetime.utcnow(),
+                frequency=transaction.frequency
+            )
+            db.session.add(new_transaction)
+            db.session.commit()
 
 if __name__ == '__main__':
     with app.app_context():
