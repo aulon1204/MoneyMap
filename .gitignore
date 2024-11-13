@@ -4,19 +4,21 @@ __pycache__/
 *$py.class
 
 # Virtual Environment
+.venv/
 venv/
 ENV/
 env/
 venv.bak/
-.venv/
+env.bak/
 
-# SQLite Datenbank
-finance.db
+# SQLite-Datenbanken
+*.sqlite3
+*.db
 
 # Flask instance folder
 instance/
 
-# Env-Dateien (für Umgebungsvariablen)
+# Umgebungsvariablen-Dateien
 .env
 .flaskenv
 
@@ -26,14 +28,14 @@ instance/
 *.sublime-project
 *.sublime-workspace
 
-# OS-spezifische Dateien
+# Betriebssystem-spezifische Dateien
 .DS_Store
 Thumbs.db
 
 # Log-Dateien
 *.log
 
-# Coverage Reports
+# Coverage-Berichte
 htmlcov/
 .coverage
 .coverage.*
@@ -47,47 +49,38 @@ coverage.xml
 *.manifest
 *.spec
 
-# Installer logs
+# Installer-Logs
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
-htmlcov/
+# Unit-Test / Coverage-Reports
 .tox/
 .nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
+.hypothesis/
 
-# Translations
+# Übersetzungen
 *.mo
 *.pot
 
-# Django stuff:
-*.log
+# Django-spezifische Dateien
 local_settings.py
-db.sqlite3
 
-# Flask-WTF CSRF token
-.flaskenv
+# Flask-WTF CSRF-Token
+instance/
 
-# macOS
+# macOS-spezifische Dateien
 .DS_Store
 
-# Windows
+# Windows-spezifische Dateien
 Thumbs.db
 
-# Python cache
+# Python-Cache
 __pycache__/
 *.pyc
 
-# Coverage reports
+# Coverage-Berichte
 coverage/
 *.cover
 
-# Other
+# Sonstige
 *.sqlite3
